@@ -410,6 +410,11 @@
   font-size: 0.9rem;
   opacity: 0.8;
   animation: fadeUp 1s ease-out;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 /* Animations */
@@ -615,4 +620,36 @@
 
 .options-container::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* 新增访客计数器容器样式 */
+.visitorCounterContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-md);
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-secondary);
+  font-size: 0.85em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .visitorCounterContainer {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.visitorIcon {
+  stroke: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* 免责声明样式调整 */
+.disclaimer {
+  margin: 0;
+  font-size: 0.8em;
+  max-width: 750px;
+  line-height: 1.4;
+  text-align: center;
 }

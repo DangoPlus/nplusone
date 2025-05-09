@@ -40,7 +40,10 @@ export default function Home() {
   // 输出状态
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [error, setError] = useState<string>("");
-  
+
+  // 新增访客计数 state
+  const [visitorCount, setVisitorCount] = useState<string>("..."); // 初始显示 "..." 或加载图标
+
   // 创建结果区域的引用
   const resultSectionRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +65,40 @@ export default function Home() {
       resultSectionRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [result]);
+
+  // 新增：访客计数 useEffect
+  useEffect(() => {
+    const workerUrl = '	https://nplus.dnext.click/counter'; // 你的 Worker URL
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Development mode: Setting mock visitor count.");
+      setVisitorCount("999");
+    } else {
+      // 生产环境：调用 Worker
+      const fetchVisitorCountFromWorker = async () => {
+        try {
+          const response = await fetch(workerUrl, {
+            method: 'GET',
+            headers: {
+              'X-Count-Request': 'increment' // 添加自定义头部
+            }
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Worker response error body:", errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const count = await response.text();
+          setVisitorCount(count);
+        } catch (fetchError) {
+          console.error("从 Worker 获取访客计数失败:", fetchError);
+          setVisitorCount("N/A"); // 出错时显示 N/A
+        }
+      };
+      fetchVisitorCountFromWorker();
+    }
+  }, []); // 空依赖数组，仅在组件挂载时运行
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -315,7 +352,15 @@ export default function Home() {
         )}
 
         <footer className={styles.footer}>
-           <p>免责声明：本模拟器计算结果仅供参考，不具有法律效力。具体金额请以劳动行政部门、劳动仲裁机构或人民法院的最终认定为准。</p>
+          <div className={styles.visitorCounterContainer}>
+            {/* 这里是新的访客计数器 UI */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.visitorIcon}>
+              <title>访客图标</title>
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span>站点总访问: {visitorCount} 次</span>
+          </div>
+          <p className={styles.disclaimer}>免责声明：本模拟器计算结果仅供参考，不具有法律效力。具体金额请以劳动行政部门、劳动仲裁机构或人民法院的最终认定为准。</p>
         </footer>
       </main>
     </div>
