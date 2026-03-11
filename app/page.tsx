@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import styles from "./page.module.css";
 import { useState, useEffect, useRef } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
@@ -68,7 +67,7 @@ export default function Home() {
 
   // 新增：访客计数 useEffect
   useEffect(() => {
-    const workerUrl = '	https://nplus.dnext.click/counter'; // 你的 Worker URL
+    const workerUrl = 'https://nplus.dnext.click/counter'; // 你的 Worker URL
 
     if (process.env.NODE_ENV === 'development') {
       console.log("Development mode: Setting mock visitor count.");
@@ -297,7 +296,7 @@ export default function Home() {
             </div>
 
             {/* 上月工资输入，条件显示，当选择N+1情形时更突出或变为必填 */}
-            {(terminationReason.endsWith('_unnotified') || terminationReason === "medical_leave_expired_unnotified" || terminationReason === "incompetent_unnotified" || terminationReason === "objective_change_unnotified" ) && (
+            {terminationReason.endsWith('_unnotified') && (
               <div className={styles.formGroup}>
                 <label htmlFor="lastMonthSalary">解除合同前上月工资 (元, 用于+1):</label>
                 <input
